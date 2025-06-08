@@ -2,7 +2,8 @@
 
 A comprehensive web application built with Flask, featuring user authentication, onboarding process, and an interactive dashboard with project and team management capabilities.
 
-Screenshot 2025-06-08 092157.png
+
+https://github.com/ShashankNalkande1/job-flask/blob/main/Screenshot%202025-06-08%20092157.png
 
 ## Features
 
