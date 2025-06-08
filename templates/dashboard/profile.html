@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Dashboard App{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Profile Header -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" 
+                             style="width: 100px; height: 100px;">
+                            <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                    <h2 class="mb-1">{{ user.name }}</h2>
+                    <p class="text-muted">{{ user.email }}</p>
+                    {% if business_info %}
+                    <p class="mb-0">
+                        <span class="badge bg-primary">{{ business_info.company_name }}</span>
+                        <span class="badge bg-secondary">{{ business_info.industry }}</span>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-circle"></i> Personal Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Full Name</label>
+                            <div class="fw-bold">{{ user.name }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Email Address</label>
+                            <div class="fw-bold">{{ user.email }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Account Status</label>
+                            <div>
+                                {% if user.onboarding_completed %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Complete
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-clock"></i> Pending
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Member Since</label>
+                            <div class="fw-bold">June 2025</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <button class="btn btn-outline-primary" onclick="editProfile()">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- Business Information -->
+            {% if business_info %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-building"></i> Business Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Company Name</label>
+                            <div class="fw-bold">{{ business_info.company_name }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Industry</label>
+                            <div class="fw-bold">{{ business_info.industry.title() }}</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Company Size</label>
+                            <div class="fw-bold">{{ business_info.size }} employees</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Preferences -->
+            {% if preferences %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-gear"></i> Preferences
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Theme</label>
+                            <div class="fw-bold">
+                                {% if preferences.theme == 'dark' %}
+                                    <i class="bi bi-moon"></i> Dark
+                                {% else %}
+                                    <i class="bi bi-sun"></i> Light
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted">Dashboard Layout</label>
+                            <div class="fw-bold">
+                                <i class="bi bi-layout-three-columns"></i> {{ preferences.layout.title() }}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <button class="btn btn-outline-secondary" onclick="editPreferences()">
+                        <i class="bi bi-palette"></i> Update Preferences
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check"></i> Account Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2 d-md-flex">
+                        {% if not user.onboarding_completed %}
+                        <a href="{{ url_for('onboarding.start') }}" class="btn btn-primary">
+                            <i class="bi bi-play-circle"></i> Complete Onboarding
+                        </a>
+                        {% endif %}
+                        <button class="btn btn-outline-warning" onclick="changePassword()">
+                            <i class="bi bi-key"></i> Change Password
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="deleteAccount()">
+                            <i class="bi bi-trash"></i> Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="editName" value="{{ user.name }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="editEmail" value="{{ user.email }}">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function editProfile() {
+        new bootstrap.Modal(document.getElementById('editProfileModal')).show();
+    }    function saveProfile() {
+        const name = document.getElementById('editName').value;
+        const email = document.getElementById('editEmail').value;
+        const saveButton = document.querySelector('#editProfileModal .btn-primary');
+        
+        // Validate input
+        if (!validateRequired(name)) {
+            showToast('Name is required', 'error');
+            return;
+        }
+        
+        if (!validateEmail(email)) {
+            showToast('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        setButtonLoading(saveButton, true);
+        
+        apiCall('/api/profile', {
+            method: 'PATCH',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ name: name, email: email })
+        })
+        .then(data => {
+            showToast('Profile updated successfully!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        })
+        .catch(error => {
+            showToast('Error: ' + error.message, 'error');
+        })
+        .finally(() => {
+            setButtonLoading(saveButton, false);
+        });
+    }    function editPreferences() {
+        showToast('Preferences editing feature coming soon!', 'info');
+    }
+
+    function changePassword() {
+        showToast('Password change feature coming soon!', 'info');
+    }
+
+    function deleteAccount() {
+        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+            showToast('Account deletion feature coming soon!', 'info');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Dashboard App{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow mt-5">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-box-arrow-in-right text-primary" style="font-size: 3rem;"></i>
+                        <h2 class="mt-2">Login</h2>
+                        <p class="text-muted">Welcome back! Please sign in to your account.</p>
+                    </div>
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                          <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg", id="loginBtn") }}
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                      <div class="text-center">
+                        <p class="mb-0">Don't have an account? 
+                            <a href="{{ url_for('auth.register') }}" class="text-decoration-none">
+                                Sign up here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = document.getElementById('loginBtn');
+        
+        form.addEventListener('submit', function(e) {
+            setButtonLoading(submitBtn, true);
+            // Form will submit normally, loading state will be reset on page load
+        });
+        
+        // Add real-time validation
+        const emailField = document.querySelector('input[type="email"]');
+        const passwordField = document.querySelector('input[type="password"]');
+        
+        emailField.addEventListener('blur', function() {
+            if (!validateEmail(this.value)) {
+                this.classList.add('is-invalid');
+                showToast('Please enter a valid email address', 'error');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        passwordField.addEventListener('blur', function() {
+            if (!validateRequired(this.value)) {
+                this.classList.add('is-invalid');
+                showToast('Password is required', 'error');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+</script>
+{% endblock %}

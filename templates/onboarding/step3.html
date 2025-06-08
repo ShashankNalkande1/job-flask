@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Onboarding - Step 3 - Dashboard App{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">        <div class="col-md-8 col-lg-6">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step completed">1</div>
+                <div class="step completed">2</div>
+                <div class="step active">3</div>
+            </div>
+            
+            <div class="card shadow mt-4 onboarding-card">                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-gear onboarding-step-icon"></i> Step 3: Preferences
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <small class="text-muted">Progress</small>
+                            <small class="text-muted">Step {{ step }} of 3</small>
+                        </div>                        <div class="progress onboarding-progress">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                100%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-muted mb-4">
+                        Almost done! Set your preferences to customize your dashboard experience.
+                    </p>
+                      <form method="POST" id="onboarding-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.theme.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-palette"></i></span>
+                                {{ form.theme(class="form-select" + (" is-invalid" if form.theme.errors else "")) }}
+                            </div>
+                            {% if form.theme.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.theme.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Choose your preferred color scheme.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            {{ form.layout.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-layout-three-columns"></i></span>
+                                {{ form.layout(class="form-select" + (" is-invalid" if form.layout.errors else "")) }}
+                            </div>
+                            {% if form.layout.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.layout.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Select how you want your dashboard to be arranged.</div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('onboarding.back', step=3) }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            {{ form.submit(class="btn btn-success") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Celebration animation on page load
+        setTimeout(() => {
+            showToast('🎉 Final step! You\'re almost done!', 'success');
+        }, 500);
+        
+        // Add confetti effect on form submit
+        const form = document.getElementById('onboarding-form');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show completion animation
+            setButtonLoading(submitBtn, true);
+            showToast('🎊 Completing your onboarding...', 'success');
+            
+            // Add success pulse to the card
+            const card = document.querySelector('.onboarding-card');
+            card.classList.add('success-pulse');
+            
+            // Submit after animation
+            setTimeout(() => {
+                form.submit();
+            }, 1500);
+        });
+        
+        // Add field enhancements
+        addFieldEnhancements();
+    });
+</script>
+{% endblock %}
