@@ -5,6 +5,9 @@ A comprehensive web application built with Flask, featuring user authentication,
 
 https://github.com/ShashankNalkande1/job-flask/blob/main/Screenshot%202025-06-08%20092157.png
 
+
+<img src="https://raw.githubusercontent.com/ShashankNalkande1/job-flask/main/Screenshot%202025-06-08%20092157.png" alt="Dashboard Screenshot">
+
 ## Features
 
 ### Core Functionality
