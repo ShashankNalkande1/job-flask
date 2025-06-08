@@ -7,6 +7,8 @@ https://github.com/ShashankNalkande1/job-flask/blob/main/Screenshot%202025-06-08
 
 
 <img src="https://raw.githubusercontent.com/ShashankNalkande1/job-flask/main/Screenshot%202025-06-08%20092157.png" alt="Dashboard Screenshot">
+<img src="https://raw.githubusercontent.com/ShashankNalkande1/job-flask/main/Screenshot%202025-06-08%20092211.png" alt="Screenshot" style="width:100%; max-width:800px; border:1px solid #ccc; border-radius:10px;">
+
 
 ## Features
 
